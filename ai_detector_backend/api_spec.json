@@ -1,0 +1,98 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "BERT Classifier with SHAP Explanations",
+    "description": "API for predicting sentiment and providing SHAP explanations using a DistilBERT model.",
+    "version": "1.0.0"
+  },
+  "host": "127.0.0.1:8000",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/predict": {
+      "post": {
+        "summary": "Predict sentiment and return SHAP explanations",
+        "description": "Accepts a text input, returns a prediction using the DistilBERT model, and provides SHAP explanations.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "example": "This is a sample text for prediction."
+                }
+              },
+              "required": ["text"]
+            },
+            "description": "Text to classify"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prediction": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "example": "human"
+                    },
+                    "score": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 0.963
+                    }
+                  }
+                },
+                "shap": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "base_values": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.123
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 0.456
+                        }
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "format": "float",
+                          "example": -0.789
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "string",
+              "example": "https://http.cat/500"
+            }
+          }
+        }
+      }
+    }
+  }
+}

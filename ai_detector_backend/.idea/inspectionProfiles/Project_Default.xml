@@ -1,0 +1,75 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="CucumberUndefinedStep" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="54">
+            <item index="0" class="java.lang.String" itemvalue="psycopg2" />
+            <item index="1" class="java.lang.String" itemvalue="swagger-spec-validator" />
+            <item index="2" class="java.lang.String" itemvalue="drf-yasg" />
+            <item index="3" class="java.lang.String" itemvalue="coverage" />
+            <item index="4" class="java.lang.String" itemvalue="protobuf" />
+            <item index="5" class="java.lang.String" itemvalue="html5lib" />
+            <item index="6" class="java.lang.String" itemvalue="pytest-django" />
+            <item index="7" class="java.lang.String" itemvalue="drf-openapi-tester" />
+            <item index="8" class="java.lang.String" itemvalue="psycopg2-binary" />
+            <item index="9" class="java.lang.String" itemvalue="python-dotenv" />
+            <item index="10" class="java.lang.String" itemvalue="deepdiff" />
+            <item index="11" class="java.lang.String" itemvalue="django-extensions" />
+            <item index="12" class="java.lang.String" itemvalue="graphene-django" />
+            <item index="13" class="java.lang.String" itemvalue="djangorestframework-simplejwt" />
+            <item index="14" class="java.lang.String" itemvalue="rest-condition" />
+            <item index="15" class="java.lang.String" itemvalue="pip-autoremove" />
+            <item index="16" class="java.lang.String" itemvalue="pip-chill" />
+            <item index="17" class="java.lang.String" itemvalue="service-identity" />
+            <item index="18" class="java.lang.String" itemvalue="django-request-logging" />
+            <item index="19" class="java.lang.String" itemvalue="gunicorn" />
+            <item index="20" class="java.lang.String" itemvalue="python-bidi" />
+            <item index="21" class="java.lang.String" itemvalue="django-unfold" />
+            <item index="22" class="java.lang.String" itemvalue="boto3" />
+            <item index="23" class="java.lang.String" itemvalue="django-dbbackup" />
+            <item index="24" class="java.lang.String" itemvalue="django-filter" />
+            <item index="25" class="java.lang.String" itemvalue="install" />
+            <item index="26" class="java.lang.String" itemvalue="pytest-env" />
+            <item index="27" class="java.lang.String" itemvalue="rsa" />
+            <item index="28" class="java.lang.String" itemvalue="django-admin-charts" />
+            <item index="29" class="java.lang.String" itemvalue="django-environ" />
+            <item index="30" class="java.lang.String" itemvalue="pytest-xdist" />
+            <item index="31" class="java.lang.String" itemvalue="django-storages" />
+            <item index="32" class="java.lang.String" itemvalue="pyhanko" />
+            <item index="33" class="java.lang.String" itemvalue="drf-writable-nested" />
+            <item index="34" class="java.lang.String" itemvalue="pyopenssl" />
+            <item index="35" class="java.lang.String" itemvalue="svglib" />
+            <item index="36" class="java.lang.String" itemvalue="pytest-cov" />
+            <item index="37" class="java.lang.String" itemvalue="phonenumberslite" />
+            <item index="38" class="java.lang.String" itemvalue="pygraphviz" />
+            <item index="39" class="java.lang.String" itemvalue="django-phonenumber-field" />
+            <item index="40" class="java.lang.String" itemvalue="django-cors-headers" />
+            <item index="41" class="java.lang.String" itemvalue="django-rest-knox" />
+            <item index="42" class="java.lang.String" itemvalue="django-cron" />
+            <item index="43" class="java.lang.String" itemvalue="bandit" />
+            <item index="44" class="java.lang.String" itemvalue="arabic-reshaper" />
+            <item index="45" class="java.lang.String" itemvalue="django-debug-permissions" />
+            <item index="46" class="java.lang.String" itemvalue="toml" />
+            <item index="47" class="java.lang.String" itemvalue="django-crontab" />
+            <item index="48" class="java.lang.String" itemvalue="django-guardian" />
+            <item index="49" class="java.lang.String" itemvalue="pypdf3" />
+            <item index="50" class="java.lang.String" itemvalue="cachetools" />
+            <item index="51" class="java.lang.String" itemvalue="django-elasticsearch-dsl" />
+            <item index="52" class="java.lang.String" itemvalue="model-bakery" />
+            <item index="53" class="java.lang.String" itemvalue="stripe" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

@@ -1,0 +1,33 @@
+# Exclude node_modules in frontend
+ai_detector_frontend/node_modules/
+ai_detector_backend/.idea
+ai_detector_backend/.venv
+
+# Exclude Python cache files from backend
+__pycache__/
+*.pyc
+*.pyo
+
+# Exclude environment and configuration files
+.venv/
+.env/
+
+# Exclude version control files
+.git/
+.gitignore
+
+# Exclude build and distribution files
+build/
+dist/
+
+# Exclude Jupyter notebook files
+*.ipynb
+
+# Exclude SQLite database files
+*.sqlite3
+
+# Exclude SHAP output directory
+shap_outputs/
+
+# Exclude frontend source code (if not needed in the Docker image)
+frontend/src/

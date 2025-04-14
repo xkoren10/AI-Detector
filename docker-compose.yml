@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ai_detector_backend/Dockerfile
+    volumes:
+      - ./static_files:/app/static_files
+    ports:
+      - "8000:8000"  # HostPort:ContainerPort
+    environment:
+      - TZ=UTC
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ai_detector_frontend/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  # Optional: secondary entrypoint for backend API access (e.g., CLI, script, another service)
+  api_client:
+    image: curlimages/curl:latest
+    depends_on:
+      - backend
+    entrypoint: ["curl", "http://backend:8000/predict"]

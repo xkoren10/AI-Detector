@@ -5,6 +5,7 @@ import os
 import joblib
 from pathlib import Path
 
+
 def save_shap_plots_to_html(xgbc_model, processed_input):
     project_root = Path(__file__).resolve().parent.parent.parent
     output_dir = project_root / "static_files"
@@ -62,7 +63,7 @@ def save_shap_plots_to_html(xgbc_model, processed_input):
     plt.close(fig2)
 
     # --- HTML ---
-    html_path = os.path.join(output_dir, "explanation.html")
+    html_path = os.path.join(output_dir, "xgbc_explanation.html")
     html_content = f"""
     <html>
     <body>

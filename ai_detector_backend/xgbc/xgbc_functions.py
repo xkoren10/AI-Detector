@@ -3,23 +3,23 @@ import pandas as pd
 import textstat
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
-from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib
-import requests
+
 
 # Load pre-trained tokenizer & model for perplexity calculation
 model_name = 'gpt2'
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+tokenizer = GPT2Tokenizer.from_pretrained("/work/ai_detector_backend/xgbc/gpt2_local") #add /work/ for docker
 model = GPT2LMHeadModel.from_pretrained(model_name).to("cpu")  # Use GPU if available
 model.eval()
 
 
-stopwords_list = requests.get("https://gist.githubusercontent.com/rg089/35e00abf8941d72d419224cfd5b5925d/raw/12d899b70156fd0041fa9778d657330b024b959c/stopwords.txt").content
-stop_words = set(stopwords_list.decode().splitlines())
+with open("/work/ai_detector_backend/xgbc/stopwords.txt", "r") as f:
+    stop_words = [line.strip() for line in f if line.strip()]
+f.close()
 
 # Load the vectorizer and encoder
-vectorizer = joblib.load("ai_detector_backend/xgbc/tfidf_vectorizer.pkl")
-encoder = joblib.load("ai_detector_backend/xgbc/label_encoder.pkl")
+vectorizer = joblib.load("/work/ai_detector_backend/xgbc/tfidf_vectorizer.pkl")
+encoder = joblib.load("/work/ai_detector_backend/xgbc/label_encoder.pkl")
 
 
 def calculate_perplexity(text):

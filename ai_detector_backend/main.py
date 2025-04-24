@@ -1,14 +1,12 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import RedirectResponse
 import xgboost as xgb
 from pydantic import BaseModel
 import torch
-from transformers import DistilBertForSequenceClassification, AutoTokenizer, TextClassificationPipeline
-import shap, os
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
+import os
 import warnings
 from fastapi.staticfiles import StaticFiles
-from ai_detector_backend.xgbc.xgbc_functions import preprocess_and_vectorize
-from ai_detector_backend.xgbc.xgbc_shap import save_shap_plots_to_html
+from ai_detector_backend.predict import predict_bert, predict_xgbc
 
 
 warnings.filterwarnings('ignore')
@@ -37,19 +35,19 @@ app.add_middleware(
 device = torch.device("cpu")
 print(device)
 
-checkpoint = "tommyliphys/ai-detector-distilbert"
-model = DistilBertForSequenceClassification.from_pretrained(checkpoint, from_tf=True)
+model = AutoModelForSequenceClassification.from_pretrained('/work/ai_detector_backend/bert/models/trained_model_TB')
 model.to(device)
-tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 
+tokenizer = AutoTokenizer.from_pretrained('/work/ai_detector_backend/bert/models/trained_tokenizer_TB')
+model.eval()  # Set model to evaluation mode
 
-model.config.label2id = {"human": 0, "AI": 1}
-model.config.id2label = {0: "human", 1: "AI"}
+model.config.label2id = {"human": 1, "AI": 0}   # Check this twice
+model.config.id2label = {1: "human", 0: "AI"}
 
 pipe = TextClassificationPipeline(model=model, tokenizer=tokenizer, top_k=None, device=device)
 
 xgbc_model = xgb.XGBClassifier()
-xgbc_model.load_model("ai_detector_backend/xgbc/xgbc_model_balanced_13_feats.json")
+xgbc_model.load_model("/work/ai_detector_backend/xgbc/xgbc_model_balanced_13_feats.json")
 
 
 class TextRequest(BaseModel):
@@ -65,49 +63,63 @@ async def predict(request: TextRequest):
     explain = request.explain
 
     if classifier == "xgbc":
-        # Example usage
-        try:
-            processed_input = preprocess_and_vectorize(text)
-
-            # Now predict probabilities
-            class_probabilities = xgbc_model.predict_proba(processed_input)[0]  # (num_samples, num_classes)
-
-            response = {"prediction": [[{"label": "human",
-                                         "score": float(class_probabilities[1])
-                                         },
-                                        {"label": "AI",
-                                         "score": float(class_probabilities[0])
-                                         }]]}
-            if explain:
-                html_file = save_shap_plots_to_html(xgbc_model, processed_input)
-                response["shap_explanation"] = "/static/explanation.html"
-            return response
-
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+        return predict_xgbc(xgbc_model, text, explain)
 
     elif classifier == "bert":
-        try:
-            # Get predictions
-            prediction = pipe([text])
-            response = {"prediction": prediction}
+        return predict_bert(pipe, text, explain)
 
+    elif classifier == "combined":
+        predictions = [predict_xgbc(xgbc_model, text, explain), predict_bert(pipe, text, explain)]
+
+        # Weights for each prediction
+        weight_xgbc = 0.3
+        weight_bert = 0.7
+        total_weight = weight_xgbc + weight_bert
+
+        # Extract scores
+        # Initialize label scores
+        scores = {}
+
+        # Loop through each prediction result and its associated weight
+        for prediction, weight in zip(predictions, [weight_xgbc, weight_bert]):
+            for item in prediction["prediction"][0]:
+                label = item["label"]
+                score = item["score"]
+
+                if label not in scores:
+                    scores[label] = 0.0
+                scores[label] += score * weight
+
+        # Normalize by total weight
+        for label in scores:
+            scores[label] /= total_weight
+
+        # Rebuild final result
+        response = {
+            "prediction": [
+                [
+                    {"label": label, "score": scores[label]} for label in scores
+                ]
+            ]
+        }
+
+        if explain:
             if explain:
-                # Generate SHAP explanations
-                explainer = shap.Explainer(pipe)
-                shap_values = explainer([text])
 
-                file_name = "explanation.html"
-                file_path = os.path.join(STATIC_DIR, file_name)
-                file = open(file_path, 'w')
-                file.write(shap.plots.text(shap_values, display=False))
-                file.close()
+                xgbc_shap = "static_files/" + str(predictions[0]["shap_explanation"]).split("/")[-1]
+                bert_shap = "static_files/" + str(predictions[1]["shap_explanation"]).split("/")[-1]
 
-                response["shap_explanation"] = f"/static/{file_name}"
+                with open(bert_shap, "r") as f1, open(xgbc_shap, "r") as f2:
+                    content1 = f1.read()
+                    content2 = f2.read()
 
-            return response
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+                with open("static_files/combined_explanation.html", "w") as out:
+                    out.write(content1 + "\n" + content2)
+                out.close()
 
+                response["shap_explanation"] = "/static/combined_explanation.html"
+
+        return response
     else:
-        raise HTTPException(status_code=500, detail=f"Invalid classifier: {classifier}. Classifier must be \"xgbc\" or \"bert\".")
+        raise HTTPException(status_code=400, detail=f"Invalid classifier: {classifier}."
+                                                    f" Classifier must be \"xgbc\", \"bert\" or \"combined\".")

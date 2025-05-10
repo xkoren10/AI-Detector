@@ -35,10 +35,10 @@ app.add_middleware(
 device = torch.device("cpu")
 print(device)
 
-model = AutoModelForSequenceClassification.from_pretrained('/work/ai_detector_backend/bert/models/trained_model_TB')
+model = AutoModelForSequenceClassification.from_pretrained('/work/ai_detector_backend/bert/models/trained_model')
 model.to(device)
 
-tokenizer = AutoTokenizer.from_pretrained('/work/ai_detector_backend/bert/models/trained_tokenizer_TB')
+tokenizer = AutoTokenizer.from_pretrained('/work/ai_detector_backend/bert/models/trained_tokenizer')
 model.eval()  # Set model to evaluation mode
 
 model.config.label2id = {"human": 1, "AI": 0}   # Check this twice

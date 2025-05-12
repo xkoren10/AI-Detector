@@ -4,6 +4,7 @@ import textstat
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import joblib
+from scipy.sparse import hstack
 
 
 # Load pre-trained tokenizer & model for perplexity calculation
@@ -68,9 +69,9 @@ def preprocess_and_vectorize(text):
     feature_df = pd.DataFrame([feature_dict])
 
     # TF-IDF Transformation
-    tfidf_features = vectorizer.transform([text]).toarray()
+    tfidf_features = vectorizer.transform([text])
 
     # Combine handcrafted features with TF-IDF features
-    final_features = np.hstack([feature_df.values, tfidf_features])
+    final_features = hstack([tfidf_features, feature_df.values])
 
     return final_features

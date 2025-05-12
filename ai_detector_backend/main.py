@@ -72,8 +72,8 @@ async def predict(request: TextRequest):
         predictions = [predict_xgbc(xgbc_model, text, explain), predict_bert(pipe, text, explain)]
 
         # Weights for each prediction
-        weight_xgbc = 0.3
-        weight_bert = 0.7
+        weight_xgbc = 0.6
+        weight_bert = 0.4
         total_weight = weight_xgbc + weight_bert
 
         # Extract scores
